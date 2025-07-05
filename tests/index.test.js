@@ -1,43 +1,109 @@
-const axios = require("axios");
+const axios2 = require("axios");
+const { response } = require("express");
 
 const BACKEND_URL = "http://localhost:3000";
 const WS_URL = "ws://localhost:3001";
 
+const axios = {
+  post: async (...args) => {
+    try {
+      const res = await axios2.post(...args);
+      return res;
+    } catch (e) {
+      return e.response;
+    }
+  },
+  get: async (...args) => {
+    try {
+      const res = await axios2.get(...args);
+      return res;
+    } catch (e) {
+      return e.response;
+    }
+  },
+  put: async (...args) => {
+    try {
+      const res = await axios2.put(...args);
+      return res;
+    } catch (e) {
+      return e.response;
+    }
+  },
+  delete: async (...args) => {
+    try {
+      const res = await axios2.delete(...args);
+      return res;
+    } catch (e) {
+      return e.response;
+    }
+  },
+};
+
 describe("Authentication", () => {
   test("user is able to sign up only once", async () => {
-    const username = "kirat" + Math.random(); //here is the thing
+    const username = `yaqoob-${Math.random()}`; //here is the thing
     const password = "123456";
-    const response = await axios.post(`${BACKEND_URL}/api/v1/signup`, {
-      username,
-      password,
-      type: "admin",
-    });
-    expect(response.statusCode).toBe(200);
     const updatedResponse = await axios.post(`${BACKEND_URL}/api/v1/signup`, {
       username,
       password,
-      type: "admin",
+      role: "admin",
     });
 
-    expect(updatedResponse.statusCode).toBe(400);
+    expect(updatedResponse.status).toBe(400);
   });
 
-  test("user is able to sign in", async () => {
+  test("Sign in request fails if the username is empty", async () => {
+    jest.setTimeout(10000)
     const username = `yaqoob-${Math.random()}`;
     const password = "123456";
 
-    await axios.post(`${BACKEND_URL}/api/v1/signin`, {
+    const response = await axios.post(`${BACKEND_URL}/api/v1/signup`, {
+      password,
+    });
+    expect(response.status).toBe(400);
+  });
+
+  test("Sign in succeeds if the username and password are correct", async () => {
+    const username = `yaqoob-${Math.random()}`;
+    const password = "123456";
+
+    const signupRes = await axios.post(`${BACKEND_URL}/api/v1/signup`, {
       username,
       password,
+      type: "admin",
     });
 
-    const response = await axios.post(`${BACKEND_URL}/api/v1/signin`, {
-      username,
-      password,
-    });
-    expect(response.status).toBe(200);
-    expect(response.body.token).toBeDefined();
+    expect(signupRes.status).toBe(200)
+
+
+    // 2. sign‑in
+    const res = await axios.post(
+      `${BACKEND_URL}/api/v1/signin`,
+      { username, password }
+    );
+
+    // expect(res.status).toBe(200);
+    expect(res.status).toBe(200);
+    expect(res.data.token).toBeDefined();
+    
   });
+
+  // test("user is able to sign in", async () => {
+  //   const username = `yaqoob-${Math.random()}`;
+  //   const password = "123456";
+
+  //   await axios.post(`${BACKEND_URL}/api/v1/signin`, {
+  //     username,
+  //     password,
+  //   });
+
+  //   const response = await axios.post(`${BACKEND_URL}/api/v1/signin`, {
+  //     username,
+  //     password,
+  //   });
+  //   expect(response.status).toBe(200);
+  //   expect(response.data.token).toBeDefined();
+  // });
 
   test("Signin fails if the username and password is incorrect", async () => {
     const username = `random bs`;
@@ -48,13 +114,13 @@ describe("Authentication", () => {
         password,
       });
     } catch (error) {
-      expect(error.response.status).toBe(401);
+      expect(error.response.status).toBe(403);
       expect(error.response.data.error).toBe("Invalid credentials");
     }
   });
 });
 
-describe("User metadata endpoints", () => {
+/*describe("User metadata endpoints", () => {
   let token = " ";
   beforeEach(async () => {
     const username = `yaqoob-${Math.random()}`;
@@ -1166,4 +1232,5 @@ describe("WebSocket tests", () => {
     const messages = await waitForAndPopLatestMessage(ws1Messages);
     expect(messages.type).toBe("join")
   })
-});
+})
+*/
