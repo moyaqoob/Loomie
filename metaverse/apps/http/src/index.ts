@@ -9,4 +9,8 @@ app.use(express.json());
 
 app.use("/api/v1", router);
 
+app.post("/",(req,res)=>{
+    console.log("it is working")
+})
+
 app.listen(3000);

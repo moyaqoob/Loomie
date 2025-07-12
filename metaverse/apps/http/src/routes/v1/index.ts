@@ -7,6 +7,7 @@ import { SigninSchema, SignupSchema } from "../../types";
 import { adminRouter } from "./admin";
 import { spaceRouter } from "./space";
 import { userRouter } from "./user";
+import { userMiddleware } from "../../middleware/user";
 
 export const router = Router();
 
@@ -32,7 +33,7 @@ router.post("/signup", async (req, res) => {
       userId: user.id,
     });
   } catch (e) {
-    res.status(400).json({ message: "User already exists" });
+    res.status(403).json({ message: "User already exists" });
     return;
   }
 });
@@ -84,7 +85,8 @@ router.post("/signin", async (req, res) => {
   }
 });
 
-router.get("/avatars", (req, res) => {
+router.get("/avatars",userMiddleware, (req, res) => {
+  console.log("user middleware working")
   res.json({
     message: "avatar",
   });
