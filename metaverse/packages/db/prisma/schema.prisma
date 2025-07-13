@@ -22,35 +22,34 @@ model User{
   role Role
   spaces Space[]
   avatar  Avatar? @relation(fields: [avatarId],references: [id])
-  
 }
 
 model Space{
   id String @id @unique @default(uuid())
   name String
   width Int
-  height Int?
+  height Int
   thumbnail String?
   creatorId String
   creator User @relation(fields: [creatorId],references: [id])
   elements  spaceElements[]
 }
 
-model Element{
-  id String @id @default(uuid()) @unique
-  elementId String
-  spaceId String
-  x  String
-  y  String
-  spaces spaceElements[]
-  mapElements mapElements[]
+model Element {
+  id              String @id @unique @default(cuid())
+  width           Int
+  height          Int
+  static          Boolean
+  imageUrl        String
+  spaces          spaceElements[]
+  mapElements     mapElements[]
 }
 
 model spaceElements{
   id String @id @default(uuid()) @unique
   elementId String
   spaceId String
-  x Int
+  x Int 
   y Int
   element Element @relation(fields: [elementId],references: [id])
   space Space @relation(fields: [spaceId],references: [id])
@@ -58,9 +57,10 @@ model spaceElements{
 
 model Map{
   id String  @id @unique @default(cuid())
-  width Int
-  height Int
+  width String
+  height String
   name String
+  thumbnail String
   mapElements mapElements[]
 }
 
@@ -68,8 +68,8 @@ model mapElements{
   id  String @id @unique @default(cuid())
   mapId String
   elementId  String
-  x     Int?
-  y     Int?
+  x     String?
+  y     String?
   map   Map  @relation(fields: [mapId],references: [id])
   element Element @relation(fields: [elementId],references: [id])
 }
