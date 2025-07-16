@@ -57,8 +57,8 @@ model spaceElements{
 
 model Map{
   id String  @id @unique @default(cuid())
-  width String
-  height String
+  width Int
+  height Int
   name String
   thumbnail String
   mapElements mapElements[]
@@ -68,8 +68,8 @@ model mapElements{
   id  String @id @unique @default(cuid())
   mapId String
   elementId  String
-  x     String?
-  y     String?
+  x     Int?
+  y     Int?
   map   Map  @relation(fields: [mapId],references: [id])
   element Element @relation(fields: [elementId],references: [id])
 }
