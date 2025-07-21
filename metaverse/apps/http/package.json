@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "bun src/index.ts && tsc -b",
     "typecheck":"bunx tsc --noEmit",
-    "build": "bun build src/index.ts --outdir ./dist "
+    "build": "bun build src/index.ts --outdir ./dist ",
+    "nd":"bun run dev"
   },
   "devDependencies": {
     "@types/bun": "latest"

@@ -58,9 +58,6 @@ router.post("/signin", async (req, res) => {
       res.status(400).json({ message: "User not found" });
       return;
     }
-    if(user){
-        res.status(202)
-    }
     const isValid = await bcrypt.compare(
       parsedData.data.password,
       user.password
