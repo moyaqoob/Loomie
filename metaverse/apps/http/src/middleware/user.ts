@@ -20,7 +20,6 @@ export const userMiddleware = (
       role: string;
       userId: string;
     };
-
     if (decoded.role !== "user") {
       res.status(400).json({ message: "Unauthorized" });
       return;
