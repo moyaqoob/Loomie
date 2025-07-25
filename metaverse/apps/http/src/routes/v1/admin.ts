@@ -12,7 +12,6 @@ export const adminRouter = Router();
 
 adminRouter.post("/element", adminMiddleware, async (req, res) => {
   const parsedData = CreateElementSchema.safeParse(req.body);
-    console.log("element parsing",parsedData.data)
 
   if (!parsedData.success) {
     res.json({ message: "Cannot parse the Element" });
@@ -51,7 +50,7 @@ adminRouter.put("/element/:elementId", adminMiddleware, (req, res) => {
 
 adminRouter.post("/avatar", adminMiddleware, async (req, res) => {
   const parsedData = CreateAvatarSchema.safeParse(req.body);
-
+  console.log("post avatar", parsedData.data)
   if (!parsedData.success) {
     res.status(400).json({ message: "Cant parsed the Avatar" });
     return;
@@ -71,11 +70,11 @@ adminRouter.post("/avatar", adminMiddleware, async (req, res) => {
 
 adminRouter.post("/map", adminMiddleware, async (req, res) => {
   const parsedData = CreateMapSchema.safeParse(req.body);
-  console.log(parsedData.data)
   if (!parsedData.success) {
     res.status(400).json({ message: "Cannot parse the Map" });
     return;
   }
+  console.log("map data" ,parsedData.data)
 
   const map = await client.map.create({
     data: {
@@ -92,7 +91,6 @@ adminRouter.post("/map", adminMiddleware, async (req, res) => {
       },
     },
   });
-  console.log("first hit after the map", map.id);
   res.status(200).json({
     mapId: map.id,
   });

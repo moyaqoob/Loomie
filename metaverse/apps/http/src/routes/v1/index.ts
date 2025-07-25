@@ -82,10 +82,23 @@ router.post("/signin", async (req, res) => {
   }
 });
 
-router.get("/avatars",userMiddleware, (req, res) => {
-  console.log("user middleware working")
+router.get("/avatars",userMiddleware,async (req, res) => {
+  const avatars = await client.avatar.findMany({
+    where:{
+      id:req.userId!
+    }
+  });
+  console.log("avatars",avatars)
+
+  if(!avatars || avatars.length == 0){
+    res.status(400).json({message:"avatar not found"})
+  }
   res.json({
-    message: "avatar",
+    avatars:avatars.map((s)=>({
+      id:s.id,
+      name:s.name,
+      imageUrl:s.imageUrl
+    }))
   });
 });
 
