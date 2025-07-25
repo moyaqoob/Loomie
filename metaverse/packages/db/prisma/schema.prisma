@@ -75,9 +75,9 @@ model mapElements{
 }
 
 model Avatar{
-  id String @id @default(cuid())
-  imageUrl String?
+  id String @id  @default(cuid())
   name String?
+  imageUrl String?
   users User[]
 }
 
