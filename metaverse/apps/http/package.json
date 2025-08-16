@@ -4,10 +4,10 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "bun src/index.ts && tsc -b",
-    "typecheck":"bunx tsc --noEmit",
+    "dev": "bun src/index.ts",
+    "typecheck": "bunx tsc --noEmit",
     "build": "bun build src/index.ts --outdir ./dist ",
-    "nd":"bun run dev"
+    "nd": "bun run dev"
   },
   "devDependencies": {
     "@types/bun": "latest"
@@ -16,7 +16,8 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@repo/db": "*",
+    "@repo/db": "workspace:*",
+    "@types/cors": "^2.8.19",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^17.0.0",

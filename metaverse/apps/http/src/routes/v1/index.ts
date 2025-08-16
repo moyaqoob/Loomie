@@ -3,14 +3,13 @@ import bcrypt from "bcrypt";
 import { Router } from "express";
 import jwt from "jsonwebtoken";
 import { JWT_PASSWORD } from "../../../config";
+import { userMiddleware } from "../../middleware/user";
 import { SigninSchema, SignupSchema } from "../../types";
 import { adminRouter } from "./admin";
 import { spaceRouter } from "./space";
 import { userRouter } from "./user";
-import { userMiddleware } from "../../middleware/user";
 
 export const router = Router();
-
 
 router.post("/signup", async (req, res) => {
   const parsedData = SignupSchema.safeParse(req.body);
@@ -19,6 +18,7 @@ router.post("/signup", async (req, res) => {
     res.status(400).json({ message: "Validation Failed" });
     return;
   }
+  console.log("/signup", parsedData.data);
   const hashPassword = await bcrypt.hash(parsedData.data.password, 10);
   try {
     const user = await client.user.create({
@@ -32,15 +32,14 @@ router.post("/signup", async (req, res) => {
     res.json({
       userId: user.id,
     });
-  } catch (e) {
-    res.status(403).json({ message: "User already exists" });
-    return;
+  } catch (e: any) {
+    console.error("Signup error:", e);
+     res.status(403).json({ message: "Internal server error" });
   }
 });
 
 router.post("/signin", async (req, res) => {
   const parsedData = SigninSchema.safeParse(req.body);
-
   if (!parsedData.success) {
     res.status(404).json({
       message: "Validation failed",
@@ -63,7 +62,7 @@ router.post("/signin", async (req, res) => {
       user.password
     );
     if (!isValid) {
-       res.status(403).json({ message: "Invalid password" });
+      res.status(403).json({ message: "Invalid password" });
     }
 
     const token = jwt.sign(
@@ -75,30 +74,30 @@ router.post("/signin", async (req, res) => {
     );
 
     res.status(200).json({
-        token
-    })
+      token,
+    });
   } catch (e) {
     res.json("Sign In Failed").status(400);
   }
 });
 
-router.get("/avatars",userMiddleware,async (req, res) => {
+router.get("/avatars", userMiddleware, async (req, res) => {
   const avatars = await client.avatar.findMany({
-    where:{
-      id:req.userId!
-    }
+    where: {
+      id: req.userId!,
+    },
   });
-  console.log("avatars",avatars)
+  console.log("avatars", avatars);
 
-  if(!avatars || avatars.length == 0){
-    res.status(400).json({message:"avatar not found"})
+  if (!avatars || avatars.length == 0) {
+    res.status(400).json({ message: "avatar not found" });
   }
   res.json({
-    avatars:avatars.map((s)=>({
-      id:s.id,
-      name:s.name,
-      imageUrl:s.imageUrl
-    }))
+    avatars: avatars.map((s: any) => ({
+      id: s.id,
+      name: s.name,
+      imageUrl: s.imageUrl,
+    })),
   });
 });
 

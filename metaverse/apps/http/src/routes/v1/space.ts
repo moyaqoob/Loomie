@@ -11,7 +11,6 @@ export const spaceRouter = Router();
 
 spaceRouter.post("/", userMiddleware, async (req, res) => {
   const parsedData = CreateSpaceSchema.safeParse(req.body);
-  console.log("the post data", req.body);
 
   if (!parsedData.success) {
     res.status(400).json({ message: "Validation failed" });
@@ -49,7 +48,7 @@ spaceRouter.post("/", userMiddleware, async (req, res) => {
   }
 
   // Create space + elements transactionally
-  const createdSpace = await client.$transaction(async (tx) => {
+  const createdSpace = await client.$transaction(async (tx:any) => {
     const space = await tx.space.create({
       data: {
         name,
@@ -110,7 +109,7 @@ spaceRouter.get("/all", userMiddleware, async (req, res) => {
   });
   console.log("all elements",spaces.length)
   res.json({
-    spaces: spaces.map((s) => ({
+    spaces: spaces.map((s:any) => ({
       id: s.id,
       name: s.name,
       thumbnail: s.thumbnail,
@@ -141,7 +140,7 @@ spaceRouter.get("/:spaceId", userMiddleware, async (req, res) => {
 
   res.status(200).json({
     dimensions: `${space?.width}x${space?.height}`,
-    elements: space?.elements.map((e) => ({
+    elements: space?.elements.map((e:any) => ({
       id: e.id,
       element: {
         id: e.element.id,
